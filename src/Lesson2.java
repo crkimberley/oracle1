@@ -165,7 +165,7 @@ public class Lesson2 {
                 .flatMap(Arrays::stream)
                 .distinct()
                 .map(String::toLowerCase)
-                .sorted(Comparator.comparingInt(String::length))
+                .sorted(Comparator.comparing(String::length))
                 .forEach(System.out::println);
     }
   }
@@ -181,4 +181,3 @@ public class Lesson2 {
     lesson.runExercises();
   }
 }
-
