@@ -92,9 +92,21 @@ public class Lesson3 {
    * @return The list processed in whatever way you want
    */
   static List<String> processWords(List<String> wordList, boolean parallel) {
-    // YOUR CODE HERE
-    
-    return null;
+    if (parallel) {
+      return wordList.parallelStream()
+              .sorted()
+              .filter(s -> !s.substring(0,1).equals("s"))
+              .map(String::toUpperCase)
+              .distinct()
+              .collect(Collectors.toList());
+    } else {
+      return wordList.stream()
+              .sorted()
+              .filter(s -> !s.substring(0,1).equals("s"))
+              .map(String::toUpperCase)
+              .distinct()
+              .collect(Collectors.toList());
+    }
   }
 
   /**
@@ -105,12 +117,12 @@ public class Lesson3 {
    */
   public static void main(String[] args) throws IOException {
     RandomWords fullWordList = new RandomWords();
-    List<String> wordList = fullWordList.createList(1000);
+    List<String> wordList = fullWordList.createList(1000000);
 
-    measure("Sequential", () -> computeLevenshtein(wordList, false));
-    measure("Parallel", () -> computeLevenshtein(wordList, true));
+    //measure("Sequential", () -> computeLevenshtein(wordList, false));
+    //measure("Parallel", () -> computeLevenshtein(wordList, true));
     
-//    measure("Sequential", () -> processWords(wordList, false));
-//    measure("Parallel", () -> processWords(wordList, true));
+    measure("Sequential", () -> processWords(wordList, false));
+    measure("Parallel", () -> processWords(wordList, true));
   }
 }
