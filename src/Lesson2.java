@@ -131,6 +131,11 @@ public class Lesson2 {
               .flatMap(Arrays::stream)
               .distinct()
               .forEach(System.out::println);
+        // alternatively...
+        /*reader.lines()
+                .flatMap(line -> Stream.of(line.split(WORD_REGEXP)))
+                .distinct()
+                .forEach(System.out::println);*/
     }
   }
   
