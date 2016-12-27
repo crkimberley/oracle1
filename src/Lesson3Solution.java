@@ -15,10 +15,10 @@ import java.util.stream.Stream;
  * @author Simon Ritter (@speakjava)
  * @author Stuart Marks
  */
-public class Lesson3 {
+public class Lesson3Solution {
   /* How many times to repeat the test.  5 seems to give reasonable results */
   private static final int RUN_COUNT = 5;
-
+  
   /**
    * Used by the measure method to determine how long a Supplier takes to
    * return a result.
@@ -68,14 +68,16 @@ public class Lesson3 {
   static int[][] computeLevenshtein(List<String> wordList, boolean parallel) {
     final int LIST_SIZE = wordList.size();
     int[][] distances = new int[LIST_SIZE][LIST_SIZE];
-    IntStream intStream = IntStream.range(0,LIST_SIZE);
-
-    if (parallel) {
-        intStream = intStream.parallel();
-    }
-
-    intStream.forEach(i -> IntStream.range(0,LIST_SIZE).forEach(
-            j -> distances[i][j] = Levenshtein.lev(wordList.get(i),wordList.get(j))));
+    IntStream stream = IntStream.range(0, LIST_SIZE);
+    
+    if (parallel)
+      stream = stream.parallel();  // Convert the stream to a parallel one
+    
+    stream.forEach(i -> {
+      for (int j = 0; j < LIST_SIZE; j++)
+        distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
+    });
+    
     return distances;
   }
   
@@ -87,20 +89,18 @@ public class Lesson3 {
    * @return The list processed in whatever way you want
    */
   static List<String> processWords(List<String> wordList, boolean parallel) {
-    Stream<String> stringStream;
-
-    if (parallel) {
-      stringStream = wordList.parallelStream();
-    } else {
-      stringStream = wordList.stream();
-    }
-
-    return stringStream
-            .sorted()
-            .filter(s -> !s.substring(0,1).equals("s"))
-            .map(String::toUpperCase)
-            .distinct()
-            .collect(Collectors.toList());
+    Stream<String> stream;
+    
+    if (parallel)
+      stream = wordList.parallelStream();
+    else
+      stream = wordList.stream();
+    
+    return stream
+        .map(String::toLowerCase)
+        .sorted()
+        .distinct()
+        .collect(Collectors.toList());
   }
 
   /**
@@ -110,7 +110,7 @@ public class Lesson3 {
    * @throws IOException If word file cannot be read
    */
   public static void main(String[] args) throws IOException {
-    RandomWords fullWordList = new RandomWords();
+    RandomWordsSolution fullWordList = new RandomWordsSolution();
     List<String> wordList = fullWordList.createList(500000);
 
     //measure("Sequential", () -> computeLevenshtein(wordList, false));
